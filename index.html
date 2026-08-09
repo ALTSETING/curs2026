@@ -12,7 +12,19 @@
 <body>
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="#">Sales Mastery</a>
+      <a class="brand" href="#hero" data-home-link>Sales Mastery</a>
+      <div class="view-switcher" role="navigation" aria-label="Розділи Sales Mastery">
+        <span class="view-switcher-glow" aria-hidden="true"></span>
+        <button class="view-button" type="button" data-view-target="ai" aria-label="ШІ-ментор" title="ШІ-ментор">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M11 25v-3.2a9 9 0 1 1 10.8-1.3L25 24v3H14"/><path d="M11 12.5h10M13.5 9.5v6M18.5 9.5v6M11 18h8"/><circle cx="8.5" cy="12.5" r="1.5"/></svg>
+        </button>
+        <button class="view-button is-active" type="button" data-view-target="home" aria-label="Головна" aria-current="page" title="Головна">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="m6 15 10-9 10 9v11H6Z"/><path d="M12.5 26v-7h7v7"/></svg>
+        </button>
+        <button class="view-button" type="button" data-view-target="partnership" aria-label="Переваги співпраці" title="Переваги співпраці">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 16h19M19 9l7 7-7 7"/><circle cx="8" cy="16" r="4"/></svg>
+        </button>
+      </div>
       <nav class="nav-links">
         <a href="#advantages">Переваги</a>
         <a href="#courses">Курси</a>
@@ -21,7 +33,7 @@
       </nav>
     </header>
 
-    <main>
+    <main class="view is-active" data-view="home">
       <section class="hero" id="hero">
         <div class="hero-bg">
           <span class="shape shape-circle"></span>
@@ -201,6 +213,35 @@
       </section>
 
     </main>
+
+    <main class="view immersive-view" data-view="ai" hidden>
+      <section class="portal-page ai-page">
+        <div class="portal-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="portal-copy">
+          <span class="section-label">Sales Intelligence</span>
+          <h1>Ваш ШІ-ментор<br />завжди поруч</h1>
+          <p>Аналізує переговори, допомагає підготуватися до зустрічі та підказує наступний найкращий крок.</p>
+          <div class="ai-status"><span></span> Система готова до діалогу</div>
+        </div>
+      </section>
+    </main>
+
+    <main class="view immersive-view" data-view="partnership" hidden>
+      <section class="portal-page partnership-page">
+        <div class="portal-copy">
+          <span class="section-label">Співпраця з Sales Mastery</span>
+          <h1>Зростаємо<br />разом</h1>
+          <p>Ми не просто навчаємо — ми стаємо партнером, який допомагає вам перетворювати знання на вимірюваний результат.</p>
+        </div>
+        <div class="benefit-list">
+          <article><span>01</span><h2>Практика замість гіпотез</h2><p>Працюємо з вашими угодами, клієнтами та реальними бізнес-цілями.</p></article>
+          <article><span>02</span><h2>Люди + технології</h2><p>Поєднуємо досвід менторів із швидкістю та точністю ШІ-інструментів.</p></article>
+          <article><span>03</span><h2>Результат, який видно</h2><p>Фіксуємо прогрес, знаходимо точки зростання і масштабуємо те, що працює.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <div class="page-transition" aria-hidden="true"><span>Sales Mastery</span></div>
 
     <footer class="site-footer">
       <p>© 2026 Sales Mastery. Всі права захищені.</p>

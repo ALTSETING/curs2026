@@ -48,6 +48,66 @@ const counterObserver = new IntersectionObserver(
 
 counters.forEach((counter) => counterObserver.observe(counter));
 
+const viewButtons = document.querySelectorAll('[data-view-target]');
+const views = document.querySelectorAll('[data-view]');
+const transitionLayer = document.querySelector('.page-transition');
+let activeView = 'home';
+let viewIsChanging = false;
+
+const activateView = (target, anchor = null) => {
+  if (viewIsChanging || (target === activeView && !anchor)) return;
+  viewIsChanging = true;
+  const currentView = document.querySelector(`[data-view="${activeView}"]`);
+  const nextView = document.querySelector(`[data-view="${target}"]`);
+
+  currentView.classList.add('is-leaving');
+  transitionLayer.classList.remove('is-revealing');
+  transitionLayer.classList.add('is-active');
+  if ('vibrate' in navigator) navigator.vibrate([18, 35, 18]);
+
+  window.setTimeout(() => {
+    currentView.hidden = true;
+    currentView.classList.remove('is-active', 'is-leaving');
+    nextView.hidden = false;
+    nextView.classList.add('is-active', 'is-entering');
+    activeView = target;
+
+    viewButtons.forEach((button) => {
+      const isActive = button.dataset.viewTarget === target;
+      button.classList.toggle('is-active', isActive);
+      if (isActive) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    });
+
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    transitionLayer.classList.add('is-revealing');
+
+    window.setTimeout(() => {
+      transitionLayer.classList.remove('is-active', 'is-revealing');
+      nextView.classList.remove('is-entering');
+      viewIsChanging = false;
+      if (anchor) document.querySelector(anchor)?.scrollIntoView({ behavior: 'smooth' });
+    }, 480);
+  }, 420);
+};
+
+viewButtons.forEach((button) => {
+  button.addEventListener('click', () => activateView(button.dataset.viewTarget));
+});
+
+document.querySelector('[data-home-link]').addEventListener('click', (event) => {
+  event.preventDefault();
+  activateView('home', '#hero');
+});
+
+document.querySelectorAll('.nav-links a').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    if (activeView === 'home') return;
+    event.preventDefault();
+    activateView('home', link.getAttribute('href'));
+  });
+});
+
 document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const track = carousel.querySelector('.carousel-track');
   const previousButton = carousel.querySelector('.carousel-button-prev');

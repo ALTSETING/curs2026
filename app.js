@@ -48,6 +48,75 @@ const counterObserver = new IntersectionObserver(
 
 counters.forEach((counter) => counterObserver.observe(counter));
 
+document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+  const track = carousel.querySelector('.carousel-track');
+  const previousButton = carousel.querySelector('.carousel-button-prev');
+  const nextButton = carousel.querySelector('.carousel-button-next');
+  const originalCards = [...track.children];
+  const cardCount = originalCards.length;
+  let currentIndex = cardCount;
+  let isMoving = false;
+  let touchStartX = 0;
+
+  const makeClone = (card) => {
+    const clone = card.cloneNode(true);
+    clone.classList.remove('reveal', 'delay-1', 'delay-2', 'delay-3');
+    clone.setAttribute('aria-hidden', 'true');
+    clone.querySelectorAll('a, button').forEach((element) => {
+      element.tabIndex = -1;
+    });
+    return clone;
+  };
+
+  [...originalCards].reverse().forEach((card) => track.prepend(makeClone(card)));
+  originalCards.forEach((card) => track.append(makeClone(card)));
+
+  const getStep = () => {
+    const card = track.querySelector('article');
+    const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
+    return card.getBoundingClientRect().width + gap;
+  };
+
+  const setPosition = (animate = false) => {
+    track.classList.toggle('is-moving', animate);
+    track.style.transform = `translateX(${-currentIndex * getStep()}px)`;
+  };
+
+  const vibrate = () => {
+    if ('vibrate' in navigator) navigator.vibrate(25);
+  };
+
+  const move = (direction) => {
+    if (isMoving) return;
+    isMoving = true;
+    currentIndex += direction;
+    vibrate();
+    setPosition(true);
+  };
+
+  track.addEventListener('transitionend', () => {
+    if (currentIndex >= cardCount * 2) currentIndex = cardCount;
+    if (currentIndex < cardCount) currentIndex = cardCount * 2 - 1;
+    setPosition(false);
+    isMoving = false;
+  });
+
+  previousButton.addEventListener('click', () => move(-1));
+  nextButton.addEventListener('click', () => move(1));
+
+  track.addEventListener('touchstart', (event) => {
+    touchStartX = event.changedTouches[0].clientX;
+  }, { passive: true });
+
+  track.addEventListener('touchend', (event) => {
+    const distance = event.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(distance) > 40) move(distance > 0 ? -1 : 1);
+  }, { passive: true });
+
+  window.addEventListener('resize', () => setPosition(false));
+  setPosition(false);
+});
+
 window.addEventListener('mousemove', (event) => {
   const { innerWidth, innerHeight } = window;
   const ratioX = (event.clientX / innerWidth - 0.5) * 2;
